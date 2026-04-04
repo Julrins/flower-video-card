@@ -20,16 +20,19 @@ EVENTS = {
 }
 
 
-def fetch_count(event_id: str) -> int:
+def fetch_metric(event_id: str) -> dict[str, object]:
     with urlopen(BASE_URL + event_id, timeout=10) as response:
         payload = json.load(response)
-    return int(payload.get("count", 0))
+    return {
+        "count": int(payload.get("count", 0)),
+        "last_updated": payload.get("last_updated"),
+    }
 
 
 def build_payload() -> dict[str, object]:
-    metrics: dict[str, int] = {}
+    metrics: dict[str, dict[str, object]] = {}
     for metric_name, event_id in EVENTS.items():
-        metrics[metric_name] = fetch_count(event_id)
+        metrics[metric_name] = fetch_metric(event_id)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -40,9 +43,9 @@ def build_payload() -> dict[str, object]:
 def main() -> int:
     output_path = Path(__file__).resolve().parent / "stats.json"
     try:
-      payload = build_payload()
+        payload = build_payload()
     except URLError as error:
-      raise SystemExit(f"failed to fetch stats: {error}") from error
+        raise SystemExit(f"failed to fetch stats: {error}") from error
 
     output_path.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2) + "\n",

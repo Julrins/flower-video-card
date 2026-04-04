@@ -1,13 +1,37 @@
 {
-  "generated_at": "2026-04-04T19:38:30.518980+00:00",
+  "generated_at": "2026-04-04T19:47:18.108891+00:00",
   "metrics": {
-    "qr_visit_total": 0,
-    "qr_visit_unique": 0,
-    "video_start_total": 0,
-    "video_start_unique": 0,
-    "video_engaged_total": 0,
-    "video_engaged_unique": 0,
-    "video_complete_total": 0,
-    "video_complete_unique": 0
+    "qr_visit_total": {
+      "count": 5,
+      "last_updated": "2026-04-04 19:43:20"
+    },
+    "qr_visit_unique": {
+      "count": 2,
+      "last_updated": "2026-04-04 19:41:47"
+    },
+    "video_start_total": {
+      "count": 5,
+      "last_updated": "2026-04-04 19:43:20"
+    },
+    "video_start_unique": {
+      "count": 2,
+      "last_updated": "2026-04-04 19:41:47"
+    },
+    "video_engaged_total": {
+      "count": 3,
+      "last_updated": "2026-04-04 19:42:49"
+    },
+    "video_engaged_unique": {
+      "count": 2,
+      "last_updated": "2026-04-04 19:41:52"
+    },
+    "video_complete_total": {
+      "count": 1,
+      "last_updated": "2026-04-04 19:40:55"
+    },
+    "video_complete_unique": {
+      "count": 1,
+      "last_updated": "2026-04-04 19:40:55"
+    }
   }
 }

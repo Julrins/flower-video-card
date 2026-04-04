@@ -82,6 +82,12 @@
         color: var(--muted);
       }
 
+      .time {
+        margin-top: 6px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
       .meta {
         margin-top: 24px;
         color: var(--muted);
@@ -134,24 +140,28 @@
           <p class="label">QR Visits</p>
           <p id="qr-total" class="value">--</p>
           <p id="qr-unique" class="sub">Unique: --</p>
+          <p id="qr-time" class="time">Last event: --</p>
         </article>
 
         <article class="card">
           <p class="label">Video Starts</p>
           <p id="start-total" class="value">--</p>
           <p id="start-unique" class="sub">Unique: --</p>
+          <p id="start-time" class="time">Last event: --</p>
         </article>
 
         <article class="card">
           <p class="label">Watched 5+ Seconds</p>
           <p id="engaged-total" class="value">--</p>
           <p id="engaged-unique" class="sub">Unique: --</p>
+          <p id="engaged-time" class="time">Last event: --</p>
         </article>
 
         <article class="card">
           <p class="label">Completed Video</p>
           <p id="complete-total" class="value">--</p>
           <p id="complete-unique" class="sub">Unique: --</p>
+          <p id="complete-time" class="time">Last event: --</p>
         </article>
       </section>
 
@@ -169,22 +179,42 @@
         throw new Error("stats page locked");
       }
 
+      function countOf(metrics, key) {
+        return metrics[key]?.count ?? 0;
+      }
+
+      function timeOf(metrics, key) {
+        const raw = metrics[key]?.last_updated;
+        if (!raw) {
+          return "Last event: --";
+        }
+
+        const stamp = new Date(raw.replace(" ", "T") + "Z");
+        return Number.isNaN(stamp.getTime())
+          ? `Last event: ${raw}`
+          : `Last event: ${stamp.toLocaleString("ru-RU")}`;
+      }
+
       fetch("./stats.json")
         .then((response) => response.json())
         .then((payload) => {
           const metrics = payload.metrics || {};
 
-          document.getElementById("qr-total").textContent = metrics.qr_visit_total ?? 0;
-          document.getElementById("qr-unique").textContent = `Unique: ${metrics.qr_visit_unique ?? 0}`;
+          document.getElementById("qr-total").textContent = countOf(metrics, "qr_visit_total");
+          document.getElementById("qr-unique").textContent = `Unique: ${countOf(metrics, "qr_visit_unique")}`;
+          document.getElementById("qr-time").textContent = timeOf(metrics, "qr_visit_total");
 
-          document.getElementById("start-total").textContent = metrics.video_start_total ?? 0;
-          document.getElementById("start-unique").textContent = `Unique: ${metrics.video_start_unique ?? 0}`;
+          document.getElementById("start-total").textContent = countOf(metrics, "video_start_total");
+          document.getElementById("start-unique").textContent = `Unique: ${countOf(metrics, "video_start_unique")}`;
+          document.getElementById("start-time").textContent = timeOf(metrics, "video_start_total");
 
-          document.getElementById("engaged-total").textContent = metrics.video_engaged_total ?? 0;
-          document.getElementById("engaged-unique").textContent = `Unique: ${metrics.video_engaged_unique ?? 0}`;
+          document.getElementById("engaged-total").textContent = countOf(metrics, "video_engaged_total");
+          document.getElementById("engaged-unique").textContent = `Unique: ${countOf(metrics, "video_engaged_unique")}`;
+          document.getElementById("engaged-time").textContent = timeOf(metrics, "video_engaged_total");
 
-          document.getElementById("complete-total").textContent = metrics.video_complete_total ?? 0;
-          document.getElementById("complete-unique").textContent = `Unique: ${metrics.video_complete_unique ?? 0}`;
+          document.getElementById("complete-total").textContent = countOf(metrics, "video_complete_total");
+          document.getElementById("complete-unique").textContent = `Unique: ${countOf(metrics, "video_complete_unique")}`;
+          document.getElementById("complete-time").textContent = timeOf(metrics, "video_complete_total");
 
           const stamp = payload.generated_at ? new Date(payload.generated_at) : null;
           document.getElementById("generated-at").textContent = stamp && !Number.isNaN(stamp.getTime())
