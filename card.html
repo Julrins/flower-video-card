@@ -287,22 +287,22 @@
 
         <label class="field">
           <span>Small line</span>
-          <input id="eyebrow-input" type="text" value="For You" />
+          <input id="eyebrow-input" type="text" value="Для Юли" />
         </label>
 
         <label class="field">
           <span>Main title</span>
-          <input id="title-input" type="text" value="A little surprise" />
+          <input id="title-input" type="text" value="Юля, с днем рождения!" />
         </label>
 
         <label class="field">
           <span>Message</span>
-          <textarea id="message-input">Scan the QR code. I saved a small video just for you.</textarea>
+          <textarea id="message-input">Сегодня особенно красивый день, и число у него тоже особенное.</textarea>
         </label>
 
         <label class="field">
           <span>QR caption</span>
-          <input id="caption-input" type="text" value="Open the video" />
+          <input id="caption-input" type="text" value="Сканируй, тут маленький сюрприз" />
         </label>
 
         <div class="actions">
@@ -314,10 +314,10 @@
       <section class="card-wrap">
         <article class="card">
           <div>
-            <p id="eyebrow" class="eyebrow">For You</p>
-            <h2 id="title" class="title">A little surprise</h2>
+            <p id="eyebrow" class="eyebrow">Для Юли</p>
+            <h2 id="title" class="title">Юля, с днем рождения!</h2>
             <p id="message" class="message">
-              Scan the QR code. I saved a small video just for you.
+              Сегодня особенно красивый день, и число у него тоже особенное.
             </p>
             <p class="caption">
               Point your camera at the code and the page with the video will open.
@@ -328,7 +328,7 @@
             <div class="qr-box">
               <img id="qr-image" alt="QR code" />
             </div>
-            <div id="qr-note" class="qr-note">Open the video</div>
+            <div id="qr-note" class="qr-note">Сканируй, тут маленький сюрприз</div>
           </div>
         </article>
       </section>
@@ -359,12 +359,12 @@
 
       function updateCard() {
         const value = targetInput.value.trim();
-        eyebrow.textContent = eyebrowInput.value.trim() || "For You";
-        title.textContent = titleInput.value.trim() || "A little surprise";
+        eyebrow.textContent = eyebrowInput.value.trim() || "Для Юли";
+        title.textContent = titleInput.value.trim() || "Юля, с днем рождения!";
         message.textContent =
           messageInput.value.trim() ||
-          "Scan the QR code. I saved a small video just for you.";
-        qrNote.textContent = captionInput.value.trim() || "Open the video";
+          "Сегодня особенно красивый день, и число у него тоже особенное.";
+        qrNote.textContent = captionInput.value.trim() || "Сканируй, тут маленький сюрприз";
 
         if (value) {
           qrImage.src = qrUrl(value);
