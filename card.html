@@ -33,6 +33,10 @@
       .layout {
         width: min(1100px, 100%);
         margin: 0 auto;
+        display: block;
+      }
+
+      body.edit-mode .layout {
         display: grid;
         grid-template-columns: 340px 1fr;
         gap: 24px;
@@ -47,7 +51,12 @@
       }
 
       .panel {
+        display: none;
         padding: 22px;
+      }
+
+      body.edit-mode .panel {
+        display: block;
       }
 
       .panel h1,
@@ -125,7 +134,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 26px;
+        padding: 0;
       }
 
       .card {
@@ -222,7 +231,7 @@
       }
 
       @media (max-width: 860px) {
-        .layout {
+        body.edit-mode .layout {
           grid-template-columns: 1fr;
         }
 
@@ -320,7 +329,7 @@
               Сегодня особенно красивый день, и число у него тоже особенное.
             </p>
             <p class="caption">
-              Point your camera at the code and the page with the video will open.
+              Наведи камеру на QR, и видео откроется сразу.
             </p>
           </div>
 
@@ -335,6 +344,10 @@
     </main>
 
     <script>
+      const params = new URLSearchParams(window.location.search);
+      const editMode = params.get("edit") === "1";
+      const defaultTarget = new URL("./", window.location.href).href;
+
       const targetInput = document.getElementById("target-url");
       const eyebrowInput = document.getElementById("eyebrow-input");
       const titleInput = document.getElementById("title-input");
@@ -347,6 +360,12 @@
       const qrNote = document.getElementById("qr-note");
       const qrImage = document.getElementById("qr-image");
 
+      if (editMode) {
+        document.body.classList.add("edit-mode");
+      }
+
+      targetInput.value = defaultTarget;
+
       function qrUrl(value) {
         const query = new URLSearchParams({
           size: "640x640",
@@ -358,7 +377,7 @@
       }
 
       function updateCard() {
-        const value = targetInput.value.trim();
+        const value = targetInput.value.trim() || defaultTarget;
         eyebrow.textContent = eyebrowInput.value.trim() || "Для Юли";
         title.textContent = titleInput.value.trim() || "Юля, с днем рождения!";
         message.textContent =
@@ -366,13 +385,8 @@
           "Сегодня особенно красивый день, и число у него тоже особенное.";
         qrNote.textContent = captionInput.value.trim() || "Сканируй, тут маленький сюрприз";
 
-        if (value) {
-          qrImage.src = qrUrl(value);
-          qrImage.hidden = false;
-        } else {
-          qrImage.removeAttribute("src");
-          qrImage.hidden = true;
-        }
+        qrImage.src = qrUrl(value);
+        qrImage.hidden = false;
       }
 
       document.getElementById("update-card").addEventListener("click", updateCard);
