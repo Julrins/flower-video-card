@@ -1,108 +1,98 @@
-const params = new URLSearchParams(window.location.search);
-
-const sourceInput = document.getElementById("clip-source");
-const sourceLabel = document.getElementById("clip-source-label");
-const titleLabel = document.getElementById("page-title");
-const endLabel = document.getElementById("clip-end-label");
-const statusLabel = document.getElementById("clip-status");
-const noteLabel = document.getElementById("player-note");
 const player = document.getElementById("clip-player");
-const qrTargetInput = document.getElementById("qr-target");
-const qrButton = document.getElementById("build-qr");
-const qrResult = document.getElementById("qr-result");
-const qrImage = document.getElementById("qr-image");
-const qrLink = document.getElementById("qr-link");
+const source = document.getElementById("clip-source");
+const primaryAction = document.getElementById("primary-action");
+const soundToggle = document.getElementById("sound-toggle");
+const replayButton = document.getElementById("replay-button");
+const directLink = document.getElementById("direct-link");
+const statusText = document.getElementById("status-text");
 
+const params = new URLSearchParams(window.location.search);
 const clipSource = params.get("src") || "./clip-web.mp4";
-const clipTitle = params.get("title") || "Video Fragment";
-const forcedDuration = Number(params.get("duration") || "");
-let hardStop = Number.isFinite(forcedDuration) && forcedDuration > 0 ? forcedDuration : null;
 
-sourceInput.src = clipSource;
-sourceLabel.textContent = clipSource;
-titleLabel.textContent = clipTitle;
+source.src = clipSource;
+directLink.href = clipSource;
 player.load();
 
-function toClock(seconds) {
-  const total = Math.max(0, Math.floor(seconds));
-  const hrs = Math.floor(total / 3600);
-  const mins = Math.floor((total % 3600) / 60);
-  const secs = total % 60;
-
-  if (hrs > 0) {
-    return `${hrs}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-  }
-
-  return `${mins}:${String(secs).padStart(2, "0")}`;
+function setStatus(text) {
+  statusText.textContent = text;
 }
 
-player.addEventListener("loadedmetadata", () => {
-  if (!hardStop || hardStop > player.duration) {
-    hardStop = player.duration;
-  }
+function syncSoundButton() {
+  soundToggle.textContent = player.muted ? "Включить звук" : "Выключить звук";
+}
 
-  endLabel.textContent = toClock(hardStop);
-  noteLabel.textContent = hardStop === player.duration
-    ? "The clip stops at the end of the uploaded file."
-    : `Playback is forced to stop at ${toClock(hardStop)}.`;
+async function tryAutoplay() {
+  try {
+    await player.play();
+    primaryAction.classList.add("hidden");
+    setStatus("Видео уже запущено.");
+  } catch (_error) {
+    primaryAction.classList.remove("hidden");
+    setStatus("Если видео не стартовало само, нажми на кнопку поверх видео.");
+  }
+}
+
+player.addEventListener("loadeddata", () => {
+  setStatus("Видео готово к просмотру.");
+  syncSoundButton();
+  void tryAutoplay();
 });
 
 player.addEventListener("play", () => {
-  statusLabel.textContent = "Playing";
+  setStatus(player.muted ? "Видео играет. Нажми «Включить звук», если нужно." : "Видео играет со звуком.");
 });
 
 player.addEventListener("pause", () => {
-  if (player.currentTime < (hardStop || player.duration) - 0.08) {
-    statusLabel.textContent = "Paused";
+  if (!player.ended) {
+    setStatus("Видео поставлено на паузу.");
   }
 });
 
-player.addEventListener("timeupdate", () => {
-  if (!hardStop) {
-    return;
-  }
-
-  if (player.currentTime >= hardStop - 0.04) {
-    player.currentTime = hardStop;
-    player.pause();
-    statusLabel.textContent = "Finished";
-  }
-});
-
-player.addEventListener("seeking", () => {
-  if (hardStop && player.currentTime > hardStop) {
-    player.currentTime = hardStop;
-  }
+player.addEventListener("ended", () => {
+  primaryAction.textContent = "Смотреть еще раз";
+  primaryAction.classList.remove("hidden");
+  setStatus("Видео закончилось. Можно запустить его снова.");
 });
 
 player.addEventListener("error", () => {
-  statusLabel.textContent = "Missing file";
-  noteLabel.textContent =
-    "No playable file was found. Add clip-web.mp4 to this folder or pass ?src=your-file.mp4 in the page URL.";
+  primaryAction.classList.add("hidden");
+  setStatus("Если видео не открылось во встроенном плеере, нажми «Открыть видео напрямую».");
 });
 
-function buildQrImageUrl(target) {
-  const base = "https://api.qrserver.com/v1/create-qr-code/";
-  const query = new URLSearchParams({
-    size: "640x640",
-    data: target,
-    format: "png",
-    margin: "16",
-  });
-
-  return `${base}?${query.toString()}`;
-}
-
-qrButton.addEventListener("click", () => {
-  const target = qrTargetInput.value.trim();
-  if (!target) {
-    qrTargetInput.focus();
-    return;
+primaryAction.addEventListener("click", async () => {
+  try {
+    if (player.ended) {
+      player.currentTime = 0;
+    }
+    await player.play();
+    primaryAction.classList.add("hidden");
+  } catch (_error) {
+    setStatus("Браузер не дал запустить видео автоматически. Нажми стандартную кнопку Play на плеере.");
   }
-
-  const imageUrl = buildQrImageUrl(target);
-  qrImage.src = imageUrl;
-  qrLink.href = imageUrl;
-  qrLink.textContent = imageUrl;
-  qrResult.classList.remove("hidden");
 });
+
+soundToggle.addEventListener("click", async () => {
+  player.muted = !player.muted;
+  syncSoundButton();
+
+  if (player.paused) {
+    try {
+      await player.play();
+    } catch (_error) {
+      setStatus("Нажми Play на плеере, если браузер остановил видео после смены звука.");
+    }
+  }
+});
+
+replayButton.addEventListener("click", async () => {
+  player.currentTime = 0;
+  try {
+    await player.play();
+    primaryAction.classList.add("hidden");
+  } catch (_error) {
+    primaryAction.classList.remove("hidden");
+    setStatus("Нажми на кнопку поверх видео, чтобы перезапустить ролик.");
+  }
+});
+
+syncSoundButton();
