@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flower Video Stats</title>
+    <style>
+      :root {
+        --bg: #0f1115;
+        --panel: #171b22;
+        --line: rgba(255, 255, 255, 0.08);
+        --ink: #f5f7fb;
+        --muted: rgba(245, 247, 251, 0.62);
+        --accent: #89d3ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, #12161d 0%, var(--bg) 100%);
+      }
+
+      .page {
+        width: min(920px, 100%);
+        margin: 0 auto;
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        font-family: "Georgia", "Times New Roman", serif;
+        font-size: clamp(2rem, 5vw, 3rem);
+      }
+
+      .lead {
+        margin-top: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 24px;
+      }
+
+      .card {
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+      }
+
+      .label {
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .value {
+        margin-top: 10px;
+        font-size: clamp(2rem, 6vw, 3rem);
+        font-weight: 700;
+      }
+
+      .sub {
+        margin-top: 8px;
+        color: var(--muted);
+      }
+
+      .meta {
+        margin-top: 24px;
+        color: var(--muted);
+      }
+
+      .hidden-note {
+        margin-top: 16px;
+        color: var(--accent);
+      }
+
+      @media (max-width: 720px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Flower Video Stats</h1>
+      <p class="lead">
+        This page is not linked publicly. Data is refreshed from the counter backend by GitHub Actions.
+      </p>
+
+      <section class="grid">
+        <article class="card">
+          <p class="label">QR Visits</p>
+          <p id="qr-total" class="value">--</p>
+          <p id="qr-unique" class="sub">Unique: --</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Video Starts</p>
+          <p id="start-total" class="value">--</p>
+          <p id="start-unique" class="sub">Unique: --</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Watched 5+ Seconds</p>
+          <p id="engaged-total" class="value">--</p>
+          <p id="engaged-unique" class="sub">Unique: --</p>
+        </article>
+
+        <article class="card">
+          <p class="label">Completed Video</p>
+          <p id="complete-total" class="value">--</p>
+          <p id="complete-unique" class="sub">Unique: --</p>
+        </article>
+      </section>
+
+      <p id="generated-at" class="meta">Last refresh: --</p>
+      <p class="hidden-note">Direct video file opens are not tracked. Use the page QR, not the raw MP4 QR.</p>
+    </main>
+
+    <script>
+      fetch("./stats.json")
+        .then((response) => response.json())
+        .then((payload) => {
+          const metrics = payload.metrics || {};
+
+          document.getElementById("qr-total").textContent = metrics.qr_visit_total ?? 0;
+          document.getElementById("qr-unique").textContent = `Unique: ${metrics.qr_visit_unique ?? 0}`;
+
+          document.getElementById("start-total").textContent = metrics.video_start_total ?? 0;
+          document.getElementById("start-unique").textContent = `Unique: ${metrics.video_start_unique ?? 0}`;
+
+          document.getElementById("engaged-total").textContent = metrics.video_engaged_total ?? 0;
+          document.getElementById("engaged-unique").textContent = `Unique: ${metrics.video_engaged_unique ?? 0}`;
+
+          document.getElementById("complete-total").textContent = metrics.video_complete_total ?? 0;
+          document.getElementById("complete-unique").textContent = `Unique: ${metrics.video_complete_unique ?? 0}`;
+
+          const stamp = payload.generated_at ? new Date(payload.generated_at) : null;
+          document.getElementById("generated-at").textContent = stamp && !Number.isNaN(stamp.getTime())
+            ? `Last refresh: ${stamp.toLocaleString("ru-RU")}`
+            : "Last refresh: unavailable";
+        })
+        .catch(() => {
+          document.getElementById("generated-at").textContent =
+            "Last refresh: unavailable";
+        });
+    </script>
+  </body>
+</html>
