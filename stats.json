@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-04-04T20:50:13.976522+00:00",
+  "generated_at": "2026-04-04T21:17:31.111018+00:00",
   "metrics": {
     "qr_visit_total": {
-      "count": 6,
-      "last_updated": "2026-04-04 19:53:35"
+      "count": 11,
+      "last_updated": "2026-04-04 21:16:02"
     },
     "qr_visit_unique": {
-      "count": 2,
-      "last_updated": "2026-04-04 19:41:47"
+      "count": 7,
+      "last_updated": "2026-04-04 21:16:02"
     },
     "video_start_total": {
-      "count": 6,
-      "last_updated": "2026-04-04 19:53:35"
+      "count": 7,
+      "last_updated": "2026-04-04 21:16:02"
     },
     "video_start_unique": {
-      "count": 2,
-      "last_updated": "2026-04-04 19:41:47"
+      "count": 3,
+      "last_updated": "2026-04-04 21:16:02"
     },
     "video_engaged_total": {
       "count": 4,
