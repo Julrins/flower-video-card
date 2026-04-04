@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fragment Player</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Static Clip Landing</p>
+        <h1 id="page-title">Video Fragment</h1>
+        <p class="lead">
+          This page is meant for a separate legal clip file. It plays the clip
+          and stops at the configured end point.
+        </p>
+      </section>
+
+      <section class="card player-card">
+        <div class="card-head">
+          <h2>Player</h2>
+          <span id="clip-status" class="badge">Ready</span>
+        </div>
+
+        <video
+          id="clip-player"
+          class="player"
+          controls
+          preload="metadata"
+          playsinline
+          controlsList="nodownload noplaybackrate"
+          disablePictureInPicture
+        >
+          <source id="clip-source" src="./clip-web.mp4" type="video/mp4" />
+          Your browser does not support HTML5 video.
+        </video>
+
+        <div class="meta">
+          <div>
+            <span class="label">Source</span>
+            <code id="clip-source-label">./clip-web.mp4</code>
+          </div>
+          <div>
+            <span class="label">End Point</span>
+            <code id="clip-end-label">Auto</code>
+          </div>
+        </div>
+
+        <p id="player-note" class="hint">
+          Replace <code>clip-web.mp4</code> with your licensed fragment file or pass
+          <code>?src=...</code> in the URL.
+        </p>
+      </section>
+
+      <section class="card qr-card">
+        <div class="card-head">
+          <h2>QR Builder</h2>
+          <span class="badge">Optional</span>
+        </div>
+
+        <label class="field">
+          <span class="label">Public page URL</span>
+          <input
+            id="qr-target"
+            type="url"
+            placeholder="https://example.com/fragment/"
+          />
+        </label>
+
+        <button id="build-qr" class="button" type="button">
+          Build QR Preview
+        </button>
+
+        <div id="qr-result" class="qr-result hidden">
+          <img id="qr-image" alt="QR code preview" />
+          <a id="qr-link" target="_blank" rel="noreferrer">Open QR image</a>
+        </div>
+
+        <p class="hint">
+          The preview uses a third-party QR image service. If you want a fully
+          offline QR workflow later, we can swap it for a local generator.
+        </p>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
