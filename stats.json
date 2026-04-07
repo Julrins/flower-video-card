@@ -1,33 +1,33 @@
 {
-  "generated_at": "2026-04-07T15:04:28.186649+00:00",
+  "generated_at": "2026-04-07T16:15:33.713735+00:00",
   "metrics": {
     "qr_visit_total": {
-      "count": 15,
-      "last_updated": "2026-04-05 07:45:03"
+      "count": 16,
+      "last_updated": "2026-04-07 15:22:54"
     },
     "qr_visit_unique": {
       "count": 10,
       "last_updated": "2026-04-05 07:45:03"
     },
     "video_start_total": {
-      "count": 11,
-      "last_updated": "2026-04-05 07:49:32"
+      "count": 12,
+      "last_updated": "2026-04-07 15:22:54"
     },
     "video_start_unique": {
       "count": 6,
       "last_updated": "2026-04-05 07:49:32"
     },
     "video_engaged_total": {
-      "count": 8,
-      "last_updated": "2026-04-05 07:49:36"
+      "count": 9,
+      "last_updated": "2026-04-07 15:22:57"
     },
     "video_engaged_unique": {
       "count": 5,
       "last_updated": "2026-04-05 07:49:36"
     },
     "video_complete_total": {
-      "count": 2,
-      "last_updated": "2026-04-04 19:54:07"
+      "count": 3,
+      "last_updated": "2026-04-07 15:23:24"
     },
     "video_complete_unique": {
       "count": 2,
